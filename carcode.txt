@@ -1,0 +1,682 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Car {
+    int carNumber;
+    char ownerName[50];
+    struct Car* next;
+};
+
+struct Car* head = NULL; // Global head pointer for the linked list
+
+typedef void (*CarFunction)();
+
+void parkCar();
+void removeCar();
+void displayCars();
+void searchCarByNumber();
+void searchCarByOwner();
+void calculateExpectedTime();
+void addCarToWaitingList();
+void manageParking();
+void makePayment();
+void trackLocation();
+
+void executeFunction(CarFunction function) {
+    function();
+}
+
+void parkCar() {
+    int carNumber;
+    char ownerName[50];
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    printf("Enter the owner's name: ");
+    getchar(); // Clear the newline character from the input buffer
+    fgets(ownerName, sizeof(ownerName), stdin);
+    ownerName[strcspn(ownerName, "\n")] = '\0'; // Remove the newline character
+
+    struct Car* newCar = (struct Car*)malloc(sizeof(struct Car));
+    newCar->carNumber = carNumber;
+    strncpy(newCar->ownerName, ownerName, sizeof(newCar->ownerName));
+    newCar->next = NULL;
+
+    if (head == NULL) {
+        head = newCar;
+    } else {
+        struct Car* current = head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newCar;
+    }
+
+    printf("Car number %d parked successfully.\n", carNumber);
+}c
+
+void removeCar() {
+    int carNumber;
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    if (head == NULL) {
+        printf("Car park is empty.\n");
+        return;
+    }
+
+    struct Car* current = head;
+    struct Car* previous = NULL;
+
+    while (current != NULL && current->carNumber != carNumber) {
+        previous = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Car number %d is not parked.\n", carNumber);
+        return;
+    }
+
+    if (previous == NULL) {
+        head = current->next;
+    } else {
+        previous->next = current->next;
+    }
+
+    printf("Car number %d removed successfully.\n", carNumber);
+    free(current);
+}
+
+void displayCars() {
+    if (head == NULL) {
+        printf("Car park is empty.\n");
+        return;
+    }
+
+    struct Car* current = head;
+    printf("Cars parked in the car park:\n");
+
+    while (current != NULL) {
+        printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+        current = current->next;
+    }
+}
+
+cvoid searchCarByNumber() {
+    int carNumber;
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    struct Car* current = head;
+    while (current != NULL) {
+        if (current->carNumber == carNumber) {
+            printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+            return;
+        }
+        current = current->next;
+    }
+
+    printf("Car number %d is not parked.\n", carNumber);
+}
+
+void searchCarByOwner() {
+    char ownerName[50];
+
+    printf("Enter the owner's name: ");
+    getchar(); // Clear the newline character from the input buffer
+    fgets(ownerName, sizeof(ownerName), stdin);
+    ownerName[strcspn(ownerName, "\n")] = '\0'; // Remove the newline character
+
+    struct Car* current = head;
+    while (current != NULL) {
+        if (strcmp(current->ownerName, ownerName) == 0) {
+            printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+            return;
+        }
+        current = current->next;
+    }
+
+    printf("No cars found for owner: %s\n", ownerName);
+}
+
+cvoid calculateExpectedTime() {
+    printf("Calculating expected time...\n");
+    // Implementation for expected time calculation
+}
+
+void addCarToWaitingList() {
+    printf("Adding car to waiting list...\n");
+    // Implementation for adding car to waiting list
+}
+
+void manageParking() {
+    printf("Managing parking...\n");
+    // Implementation for parking management panel
+}
+
+void makePayment() {
+    printf("Making payment...\n");
+    // Implementation for payment method
+}
+
+void trackLocation() {
+    printf("Tracking location using AI...\n");
+    // Implementation for AI-based location tracking
+}
+
+int main() {
+    int choice;
+
+    CarFunction functionPointers[] = {
+        parkCar, removeCar, displayCars, searchCarByNumber,
+        searchCarByOwner, calculateExpectedTime, addCarToWaitingList,
+        manageParking, makePayment, trackLocation
+    };
+
+    while (1) {
+        printf("1. Park a car\n");
+        printf("2. Remove a car\n");
+        printf("3. Display parked cars\n");
+        printf("4. Search car by number\n");
+        printf("5. Search car by owner\n");
+        printf("6. Calculate expected time\n");
+        printf("7. Add car to waiting list\n");
+        printf("8. Manage parking\n");
+        printf("9. Make payment\n");
+        printf("10. Track car location\n");
+        printf("11. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 11) {
+            printf("Exiting the program.\n");
+            break;
+        } else if (choice < 1 || choice > 10) {
+            printf("Invalid choice. Please try again.\n");
+            continue;
+        }
+
+        executeFunction(functionPointers[choice - 1]);
+    }
+
+    return 0;
+}
+simple architecture documention of this code
+ChatGPT
+Car Parking Application Architecture
+Overview
+The car parking application is a simple command-line program designed to manage a car parking system. It allows users to perform various operations such as parking a car, removing a car, displaying parked cars, searching for a car by number or owner, calculating expected time, adding cars to a waiting list, managing parking operations, making payments, and tracking car locations using AI-based technology.
+
+Components
+Main Function: The entry point of the application that displays the menu options and handles user input.
+Car Structure: Represents a car with properties such as car number and owner name.
+Linked List: A data structure used to store and manage the parked cars.
+Function Pointers: Pointers to functions that implement the various features of the car parking application.
+Features:
+Park Car: Allows users to park a car by providing the car number and owner name.
+Remove Car: Enables users to remove a parked car by entering the car number.
+Display Cars: Shows a list of all parked cars and their details.
+Search Car by Number: Allows users to search for a car by its number and displays the car's details if found.
+Search Car by Owner: Allows users to search for a car by the owner's name and displays the car's details if found.
+Calculate Expected Time: Placeholder function to calculate the expected time of parking for a car.
+Add Car to Waiting List: Placeholder function to add a car to the waiting list for parking.
+Manage Parking: Placeholder function for managing parking operations.
+Make Payment: Placeholder function for making payments for parking services.
+Track Location: Placeholder function to track the location of cars using AI-based technology.
+Workflow
+The application starts by displaying a menu of options to the user.
+The user selects an option by entering the corresponding number.
+The selected option is executed by calling the corresponding function pointer.
+The function performs the necessary operations based on the selected feature.
+The application returns to the menu, and the process continues until the user chooses to exit.
+Data Flow
+User input is collected to determine the desired operation.
+Depending on the selected option, the necessary input (car number, owner name, etc.) is collected from the user.
+The input is used to perform the desired operation (parking, removal, searching, etc.) on the linked list of cars.
+The output is displayed to the user, providing the requested information or confirmation of the operation.
+Future Improvements
+Implement the placeholder functions (calculate expected time, add car to waiting list, manage parking, make payment, and track location) with actual functionality.
+Enhance error handling and input validation to improve the user experience.
+Implement persistence mechanisms (e.g., file storage or database integration) to store the parked car data.
+Improve the user interface by adding more user-friendly features and options.
+Enhance security by implementing registration and login functionality to restrict access to authorized users.
+Please note that this is a simplified architecture document, and depending on the specific requirements of your car parking application, you may need to include additional details and considerations.
+
+
+
+
+
+User
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct Car {
+    int carNumber;
+    char ownerName[50];
+    struct Car* next;
+};
+
+struct Car* head = NULL; // Global head pointer for the linked list
+
+typedef void (*CarFunction)();
+
+void parkCar();
+void removeCar();
+void displayCars();
+void searchCarByNumber();
+void searchCarByOwner();
+void calculateExpectedTime();
+void addCarToWaitingList();
+void manageParking();
+void makePayment();
+void trackLocation();
+
+void executeFunction(CarFunction function) {
+    function();
+}
+
+void parkCar() {
+    int carNumber;
+    char ownerName[50];
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    printf("Enter the owner's name: ");
+    getchar(); // Clear the newline character from the input buffer
+    fgets(ownerName, sizeof(ownerName), stdin);
+    ownerName[strcspn(ownerName, "\n")] = '\0'; // Remove the newline character
+
+    struct Car* newCar = (struct Car*)malloc(sizeof(struct Car));
+    newCar->carNumber = carNumber;
+    strncpy(newCar->ownerName, ownerName, sizeof(newCar->ownerName));
+    newCar->next = NULL;
+
+    if (head == NULL) {
+        head = newCar;
+    } else {
+        struct Car* current = head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newCar;
+    }
+
+    printf("Car number %d parked successfully.\n", carNumber);
+}
+
+void removeCar() {
+    int carNumber;
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    if (head == NULL) {
+        printf("Car park is empty.\n");
+        return;
+    }
+
+    struct Car* current = head;
+    struct Car* previous = NULL;
+
+    while (current != NULL && current->carNumber != carNumber) {
+        previous = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Car number %d is not parked.\n", carNumber);
+        return;
+    }
+
+    if (previous == NULL) {
+        head = current->next;
+    } else {
+        previous->next = current->next;
+    }
+
+    printf("Car number %d removed successfully.\n", carNumber);
+    free(current);
+}
+
+void displayCars() {
+    if (head == NULL) {
+        printf("Car park is empty.\n");
+        return;
+    }
+
+    struct Car* current = head;
+    printf("Cars parked in the car park:\n");
+
+    while (current != NULL) {
+        printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+        current = current->next;
+    }
+}
+
+void searchCarByNumber() {
+    int carNumber;
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    struct Car* current = head;
+    while (current != NULL) {
+        if (current->carNumber == carNumber) {
+            printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+            return;
+        }
+        current = current->next;
+    }
+
+    printf("Car number %d is not parked.\n", carNumber);
+}
+
+void searchCarByOwner() {
+    char ownerName[50];
+
+    printf("Enter the owner's name: ");
+    getchar(); // Clear the newline character from the input buffer
+    fgets(ownerName, sizeof(ownerName), stdin);
+    ownerName[strcspn(ownerName, "\n")] = '\0'; // Remove the newline character
+
+    struct Car* current = head;
+    while (current != NULL) {
+        if (strcmp(current->ownerName, ownerName) == 0) {
+            printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+            return;
+        }
+        current = current->next;
+    }
+
+    printf("No cars found for owner: %s\n", ownerName);
+}
+
+void calculateExpectedTime() {
+    printf("Calculating expected time...\n");
+    // Implementation for expected time calculation
+}
+
+void addCarToWaitingList() {
+    printf("Adding car to waiting list...\n");
+    // Implementation for adding car to waiting list
+}
+
+void manageParking() {
+    printf("Managing parking...\n");
+    // Implementation for parking management panel
+}
+
+void makePayment() {
+    printf("Making payment...\n");
+    // Implementation for payment method
+}
+
+void trackLocation() {
+    printf("Tracking location using AI...\n");
+    // Implementation for AI-based location tracking
+}
+
+int main() {
+    int choice;
+
+    CarFunction functionPointers[] = {
+        parkCar, removeCar, displayCars, searchCarByNumber,
+        searchCarByOwner, calculateExpectedTime, addCarToWaitingList,
+        manageParking, makePayment, trackLocation
+    };
+
+    while (1) {
+        printf("1. Park a car\n");
+        printf("2. Remove a car\n");
+        printf("3. Display parked cars\n");
+        printf("4. Search car by number\n");
+        printf("5. Search car by owner\n");
+        printf("6. Calculate expected time\n");
+        printf("7. Add car to waiting list\n");
+        printf("8. Manage parking\n");
+        printf("9. Make payment\n");
+        printf("10. Track car location\n");
+        printf("11. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 11) {
+            printf("Exiting the program.\n");
+            break;
+        } else if (choice < 1 || choice > 10) {
+            printf("Invalid choice. Please try again.\n");
+            continue;
+        }
+
+        executeFunction(functionPointers[choice - 1]);
+    }
+
+    return 0;
+}
+list the things what we are used in the above code like pointers,linked list,functions etc
+ChatGPT
+The code provided demonstrates the usage of various concepts and components in C programming. Here's a list of the elements used in the code:
+
+Pointers: Pointers are variables that store memory addresses. In this code, pointers are used for managing the linked list structure and function pointers for executing different functions.
+
+Linked List: The code implements a singly linked list to store information about parked cars. The struct Car represents a node in the linked list, and the next pointer connects the nodes.
+
+Functions: The code defines several functions that perform specific operations such as parking a car, removing a car, displaying parked cars, searching for cars, and managing parking-related tasks.
+
+Memory Allocation: The code uses dynamic memory allocation (malloc) to allocate memory for new car nodes when parking a car. The allocated memory is later freed using free when removing a car.
+
+Input/Output: The code utilizes input/output functions from the stdio.h library (printf, scanf, fgets) to interact with the user, display messages, and collect input for car information.
+
+String Manipulation: String manipulation functions from the string.h library (strncpy, strcmp, strcspn) are used to manipulate and compare strings. They are used for copying owner names, comparing names, and removing newline characters from input.
+
+Function Pointers: Function pointers (CarFunction) are used to store addresses of functions and allow dynamic execution of different functions based on user choices.
+
+Overall, the code showcases the usage of pointers, linked list data structure, functions, memory allocation, string manipulation, and input/output operations.
+
+
+
+
+
+
+
+void parkCar();
+void removeCar();
+void displayCars();
+void searchCarByNumber();
+void searchCarByOwner();
+void calculateExpectedTime();
+void addCarToWaitingList();
+void manageParking();
+void makePayment();
+void trackLocation();
+
+void executeFunction(CarFunction function) {
+    function();
+}
+
+void parkCar() {
+    int carNumber;
+    char ownerName[50];
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    printf("Enter the owner's name: ");
+    getchar(); // Clear the newline character from the input buffer
+    fgets(ownerName, sizeof(ownerName), stdin);
+    ownerName[strcspn(ownerName, "\n")] = '\0'; // Remove the newline character
+
+    struct Car* newCar = (struct Car*)malloc(sizeof(struct Car));
+    newCar->carNumber = carNumber;
+    strncpy(newCar->ownerName, ownerName, sizeof(newCar->ownerName));
+    newCar->next = NULL;
+
+    if (head == NULL) {
+        head = newCar;
+    } else {
+        struct Car* current = head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newCar;
+    }
+
+    printf("Car number %d parked successfully.\n", carNumber);
+}
+
+void removeCar() {
+    int carNumber;
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    if (head == NULL) {
+        printf("Car park is empty.\n");
+        return;
+    }
+
+    struct Car* current = head;
+    struct Car* previous = NULL;
+
+    while (current != NULL && current->carNumber != carNumber) {
+        previous = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        printf("Car number %d is not parked.\n", carNumber);
+        return;
+    }
+
+    if (previous == NULL) {
+        head = current->next;
+    } else {
+        previous->next = current->next;
+    }
+
+    printf("Car number %d removed successfully.\n", carNumber);
+    free(current);
+}
+
+void displayCars() {
+    if (head == NULL) {
+        printf("Car park is empty.\n");
+        return;
+    }
+
+    struct Car* current = head;
+    printf("Cars parked in the car park:\n");
+
+    while (current != NULL) {
+        printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+        current = current->next;
+    }
+}
+
+void searchCarByNumber() {
+    int carNumber;
+
+    printf("Enter the car number: ");
+    scanf("%d", &carNumber);
+
+    struct Car* current = head;
+    while (current != NULL) {
+        if (current->carNumber == carNumber) {
+            printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+            return;
+        }
+        current = current->next;
+    }
+
+    printf("Car number %d is not parked.\n", carNumber);
+}
+
+void searchCarByOwner() {
+    char ownerName[50];
+
+    printf("Enter the owner's name: ");
+    getchar(); // Clear the newline character from the input buffer
+    fgets(ownerName, sizeof(ownerName), stdin);
+    ownerName[strcspn(ownerName, "\n")] = '\0'; // Remove the newline character
+
+    struct Car* current = head;
+    while (current != NULL) {
+        if (strcmp(current->ownerName, ownerName) == 0) {
+            printf("Car number: %d, Owner: %s\n", current->carNumber, current->ownerName);
+            return;
+        }
+        current = current->next;
+    }
+
+    printf("No cars found for owner: %s\n", ownerName);
+}
+
+void calculateExpectedTime() {
+    printf("Calculating expected time...\n");
+    // Implementation for expected time calculation
+}
+
+void addCarToWaitingList() {
+    printf("Adding car to waiting list...\n");
+    // Implementation for adding car to waiting list
+}
+
+void manageParking() {
+    printf("Managing parking...\n");
+    // Implementation for parking management panel
+}
+
+void makePayment() {
+    printf("Making payment...\n");
+    // Implementation for payment method
+}
+
+void trackLocation() {
+    printf("Tracking location using AI...\n");
+    // Implementation for AI-based location tracking
+}
+
+int main() {
+    int choice;
+
+    CarFunction functionPointers[] = {
+        parkCar, removeCar, displayCars, searchCarByNumber,
+        searchCarByOwner, calculateExpectedTime, addCarToWaitingList,
+        manageParking, makePayment, trackLocation
+    };
+
+    while (1) {
+        printf("1. Park a car\n");
+        printf("2. Remove a car\n");
+        printf("3. Display parked cars\n");
+        printf("4. Search car by number\n");
+        printf("5. Search car by owner\n");
+        printf("6. Calculate expected time\n");
+        printf("7. Add car to waiting list\n");
+        printf("8. Manage parking\n");
+        printf("9. Make payment\n");
+        printf("10. Track car location\n");
+        printf("11. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 11) {
+            printf("Exiting the program.\n");
+            break;
+        } else if (choice < 1 || choice > 10) {
+            printf("Invalid choice. Please try again.\n");
+            continue;
+        }
+
+        executeFunction(functionPointers[choice - 1]);
+    }
+
+    return 0;
+}
